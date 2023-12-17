@@ -58,107 +58,139 @@ public:
 
 class Student {
 
-private:
-    std::string firstName;
-    std::string lastName;
-    std::string dateOfBirth;
-    std::string studentID;
-    std::string email;
-    std::vector<Grade> grades;
+protected:
+std::string firstName;
+std::string lastName;
+std::string dateOfBirth;
+std::string studentID;
+std::string email;
+std::vector<Grade> grades;
 public:
-    Student(
+Student(
+    const std::string& first,
+    const std::string& last,
+    const std::string& dob,
+    const std::string& id,
+    const std::string& mail,
+    const std::vector<Grade>& gr
+) : firstName(first), lastName(last), dateOfBirth(dob), studentID(id), email(mail), grades(gr) {}
+
+double avgGrade() const {
+    if (grades.empty()) {
+        return 0.0;
+    }
+    double totalScore = 0.0;
+    for (const Grade& grade : grades) {
+        totalScore += grade.getScore();
+    }
+    return totalScore / grades.size();
+}
+
+
+
+static Student inputFromConsole() {
+    std::string first, last, dob, id, mail;
+    std::vector<Grade> grades;
+
+    std::cout << "Введите имя: ";
+    std::cin >> first;
+    std::cout << "Введите фамилию: ";
+    std::cin >> last;
+    std::cout << "Введите дату рождения: ";
+    std::cin >> dob;
+    std::cout << "Введите номер студенческого билета: ";
+    std::cin >> id;
+    std::cout << "Введите email: ";
+    std::cin >> mail;
+
+    char addGrade;
+    do {
+        Grade grade = Grade::inputFromConsole();
+        grades.push_back(grade);
+
+        std::cout << "Добавить еще одну оценку? (y/n): ";
+        std::cin >> addGrade;
+    } while (addGrade == 'y' || addGrade == 'Y');
+
+    return Student(first, last, dob, id, mail, grades);
+}
+std::string getFirstName() const {
+    return firstName;
+}
+
+std::string getLastName() const {
+    return lastName;
+}
+
+std::string getFullName() const {
+    return this->firstName + " " + this->lastName;
+}
+
+Grade& getGradeReference() {
+    return grades.front(); 
+}
+virtual void printStudent() const {
+    std::cout << *this;
+}
+
+friend std::ostream& operator<<(std::ostream& os, const Student& student) {
+    os << "Имя и фамилия: " << student.firstName << " " << student.lastName << std::endl;
+    os << "Дата рождения: " << student.dateOfBirth << std::endl;
+    os << "Номер студенческого билета: " << student.studentID << std::endl;
+    os << "Email: " << student.email << std::endl;
+
+    os << "\nОценки:" << std::endl;
+    for (const Grade& grade : student.grades) {
+        grade.print();
+        os << std::endl;
+    }
+
+    return os;
+}
+
+void inputGrades() {
+    try {
+        int numGrades;
+        std::cout << "Введите количество оценок: ";
+        std::cin >> numGrades;
+
+        for (int i = 0; i < numGrades; ++i) {
+            double score;
+            std::cout << "Введите оценку #" << i + 1 << ": ";
+            std::cin >> score;
+
+            grades.push_back(Grade(score));
+        }
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Ошибка: " << e.what() << std::endl;
+    }
+}
+};
+
+
+class InternationalStudent : public Student {
+private:
+    std::string country;
+
+public:
+    InternationalStudent(
         const std::string& first,
         const std::string& last,
         const std::string& dob,
         const std::string& id,
         const std::string& mail,
-        const std::vector<Grade>& gr
-    ) : firstName(first), lastName(last), dateOfBirth(dob), studentID(id), email(mail), grades(gr) {}
-
-    double avgGrade() const {
-        if (grades.empty()) {
-            return 0.0;
-        }
-        double totalScore = 0.0;
-        for (const Grade& grade : grades) {
-            totalScore += grade.getScore();
-        }
-        return totalScore / grades.size();
-    }
+        const std::vector<Grade>& gr,
+        const std::string& country
+    ) : Student(first, last, dob, id, mail, gr), country(country) {} //4) вызов конструктора базового класса
 
 
+    // 3) Перегрузка метода базового класса
+    virtual void printStudent(Student& student) override
+    {
+        Student::printStudent(*this);
 
-    static Student inputFromConsole() {
-        std::string first, last, dob, id, mail;
-        std::vector<Grade> grades;
-
-        std::cout << "Введите имя: ";
-        std::cin >> first;
-        std::cout << "Введите фамилию: ";
-        std::cin >> last;
-        std::cout << "Введите дату рождения: ";
-        std::cin >> dob;
-        std::cout << "Введите номер студенческого билета: ";
-        std::cin >> id;
-        std::cout << "Введите email: ";
-        std::cin >> mail;
-
-        char addGrade;
-        do {
-            Grade grade = Grade::inputFromConsole();
-            grades.push_back(grade);
-
-            std::cout << "Добавить еще одну оценку? (y/n): ";
-            std::cin >> addGrade;
-        } while (addGrade == 'y' || addGrade == 'Y');
-
-        return Student(first, last, dob, id, mail, grades);
-    }
-    std::string getFirstName() const {
-        return firstName;
-    }
-
-    std::string getLastName() const {
-        return lastName;
-    }
-
-    std::string getFullName() const {
-        return this->firstName + " " + this->lastName;
-    }
-
-    Grade& getGradeReference() {
-        return grades.front(); 
-    }
-    void printStudent(const Student& student) {
-        std::cout << "Имя и фамилия: " << student.firstName << " " << student.lastName << std::endl;
-        std::cout << "Дата рождения: " << student.dateOfBirth << std::endl;
-        std::cout << "Номер студенческого билета: " << student.studentID << std::endl;
-        std::cout << "Email: " << student.email << std::endl;
-
-        std::cout << "\nОценки:" << std::endl;
-        for (const Grade& grade : student.grades) {
-            grade.print();
-            std::cout << std::endl;
-        }
-    }
-
-    void inputGrades() {
-        try {
-            int numGrades;
-            std::cout << "Введите количество оценок: ";
-            std::cin >> numGrades;
-
-            for (int i = 0; i < numGrades; ++i) {
-                double score;
-                std::cout << "Введите оценку #" << i + 1 << ": ";
-                std::cin >> score;
-
-                grades.push_back(Grade(score));
-            }
-        }
-        catch (const std::exception& e) {
-            std::cerr << "Ошибка: " << e.what() << std::endl;
-        }
+        std::cout << "Страна: " << country << std::endl;
     }
 };
 
@@ -359,6 +391,7 @@ public:
         return Course(name, start, end, instructor, events);
     }
 };
+
 
 int main() {
     setlocale(LC_ALL, "Russian");
