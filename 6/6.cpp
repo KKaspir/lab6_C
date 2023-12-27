@@ -58,7 +58,7 @@ public:
 
 class Student {
 
-protected:
+protected: /* 2) Продемонстрировать применение модификатора protected */
 std::string firstName;
 std::string lastName;
 std::string dateOfBirth;
@@ -129,6 +129,8 @@ std::string getFullName() const {
 Grade& getGradeReference() {
     return grades.front(); 
 }
+
+/* 6) Заменить методы Display используя операции << для C++ */
 virtual void printStudent() const {
     std::cout << *this;
 }
@@ -166,9 +168,15 @@ void inputGrades() {
         std::cerr << "Ошибка: " << e.what() << std::endl;
     }
 }
+
+/* 7.1) Разумное использование виртуальных функций || 7.2) В InternationalStudent */
+virtual void introduce() const {
+    std::cout << "Привет, меня зовут " << getFullName() << std::endl;
+}
 };
 
 
+/* 1) Придумать для чего в вашем проекте нужен производный класс и создать его */
 class InternationalStudent : public Student {
 private:
     std::string country;
@@ -182,17 +190,34 @@ public:
         const std::string& mail,
         const std::vector<Grade>& gr,
         const std::string& country
-    ) : Student(first, last, dob, id, mail, gr), country(country) {} //4) вызов конструктора базового класса
+    ) : Student(first, last, dob, id, mail, gr), country(country) {} /* 4) вызов конструктора базового класса */
 
 
-    // 3) Перегрузка метода базового класса
-    virtual void printStudent(Student& student) override
-    {
-        Student::printStudent(*this);
+    /* 3) Перегрузка метода базового класса */
+    void printStudent() const override {
+        Student::printStudent();
 
         std::cout << "Страна: " << country << std::endl;
     }
+
+    /* 7.2) Разумное использование виртуальных функций */
+    void introduce() const override {
+        std::cout << "Hello, my name is " << getFullName() << " from " << country << std::endl;
+    }
+
+    void greet(const Student& student) {
+        student.introduce();
+    }
+
+    /* 5) */
+    InternationalStudent& operator=(const Student& other) {
+        Student::operator=(other);
+
+        
+        return *this;
+    }
 };
+
 
 
 
@@ -392,40 +417,23 @@ public:
     }
 };
 
+/* 7.3) Не виртуальная ф-ия */
+void greet(const Student& student) {
+    student.introduce();
+}
+
+
 
 int main() {
     setlocale(LC_ALL, "Russian");
 
-    try {
-        Student student("Иван", "Иванов", "2000-01-01", "12345", "VAN@example.com", { });
-        student.inputGrades();
-    }
-    catch (const std::exception& e) {
-        std::cerr << "Ошибка в главной части программы: " << e.what() << std::endl;
-    }
+    InternationalStudent intlStudent("John", "Doe", "2000-01-01", "12345", "john@example.com", {}, "USA");
+    intlStudent.printStudent();
+    std::cout << std::endl;
 
-    Grade gradeArray[] = {
-        Grade("Биология", 4.0, "05.01.2023"),
-        Grade("Химия", 4.5, "06.01.2023"),
-        Grade("География", 3.5, "07.01.2023")
-    };
+    // 7.4) Динамические объекты
+    Student* studentPtr = new InternationalStudent("Garas", "Peter", "2000-01-01", "12345", "john@example.com", {}, "Egypt");
+    studentPtr->introduce();
+    delete studentPtr;
 
-    std::cout << "\nОдномерный массив оценок:" << std::endl;
-    for (const Grade& g : gradeArray) {
-        g.print();
-    }
-
-    Grade grade2DArray[2][2] = {
-        {Grade("Математика", 4.5, "01.01.2023"), Grade("Физика", 5.0, "02.01.2023")},
-        {Grade("История", 4.0, "03.01.2023"), Grade("Литература", 4.5, "04.01.2023")}
-    };
-
-    std::cout << "\nДвумерный массив оценок:" << std::endl;
-    for (int i = 0; i < 2; ++i) {
-        for (int j = 0; j < 2; ++j) {
-            grade2DArray[i][j].print();
-        }
-    }
-
-    return 0;
 }
