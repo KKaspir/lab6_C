@@ -66,113 +66,113 @@ std::string studentID;
 std::string email;
 std::vector<Grade> grades;
 public:
-Student(
-    const std::string& first,
-    const std::string& last,
-    const std::string& dob,
-    const std::string& id,
-    const std::string& mail,
-    const std::vector<Grade>& gr
-) : firstName(first), lastName(last), dateOfBirth(dob), studentID(id), email(mail), grades(gr) {}
+    Student(
+        const std::string& first,
+        const std::string& last,
+        const std::string& dob,
+        const std::string& id,
+        const std::string& mail,
+        const std::vector<Grade>& gr
+    ) : firstName(first), lastName(last), dateOfBirth(dob), studentID(id), email(mail), grades(gr) {}
 
-double avgGrade() const {
-    if (grades.empty()) {
-        return 0.0;
-    }
-    double totalScore = 0.0;
-    for (const Grade& grade : grades) {
-        totalScore += grade.getScore();
-    }
-    return totalScore / grades.size();
-}
-
-
-
-static Student inputFromConsole() {
-    std::string first, last, dob, id, mail;
-    std::vector<Grade> grades;
-
-    std::cout << "Введите имя: ";
-    std::cin >> first;
-    std::cout << "Введите фамилию: ";
-    std::cin >> last;
-    std::cout << "Введите дату рождения: ";
-    std::cin >> dob;
-    std::cout << "Введите номер студенческого билета: ";
-    std::cin >> id;
-    std::cout << "Введите email: ";
-    std::cin >> mail;
-
-    char addGrade;
-    do {
-        Grade grade = Grade::inputFromConsole();
-        grades.push_back(grade);
-
-        std::cout << "Добавить еще одну оценку? (y/n): ";
-        std::cin >> addGrade;
-    } while (addGrade == 'y' || addGrade == 'Y');
-
-    return Student(first, last, dob, id, mail, grades);
-}
-std::string getFirstName() const {
-    return firstName;
-}
-
-std::string getLastName() const {
-    return lastName;
-}
-
-std::string getFullName() const {
-    return this->firstName + " " + this->lastName;
-}
-
-Grade& getGradeReference() {
-    return grades.front(); 
-}
-
-/* 6) Заменить методы Display используя операции << для C++ */
-virtual void printStudent() const {
-    std::cout << *this;
-}
-
-friend std::ostream& operator<<(std::ostream& os, const Student& student) {
-    os << "Имя и фамилия: " << student.firstName << " " << student.lastName << std::endl;
-    os << "Дата рождения: " << student.dateOfBirth << std::endl;
-    os << "Номер студенческого билета: " << student.studentID << std::endl;
-    os << "Email: " << student.email << std::endl;
-
-    os << "\nОценки:" << std::endl;
-    for (const Grade& grade : student.grades) {
-        grade.print();
-        os << std::endl;
+    double avgGrade() const {
+        if (grades.empty()) {
+            return 0.0;
+        }
+        double totalScore = 0.0;
+        for (const Grade& grade : grades) {
+            totalScore += grade.getScore();
+        }
+        return totalScore / grades.size();
     }
 
-    return os;
-}
 
-void inputGrades() {
-    try {
-        int numGrades;
-        std::cout << "Введите количество оценок: ";
-        std::cin >> numGrades;
 
-        for (int i = 0; i < numGrades; ++i) {
-            double score;
-            std::cout << "Введите оценку #" << i + 1 << ": ";
-            std::cin >> score;
+    static Student inputFromConsole() {
+        std::string first, last, dob, id, mail;
+        std::vector<Grade> grades;
 
-            grades.push_back(Grade(score));
+        std::cout << "Введите имя: ";
+        std::cin >> first;
+        std::cout << "Введите фамилию: ";
+        std::cin >> last;
+        std::cout << "Введите дату рождения: ";
+        std::cin >> dob;
+        std::cout << "Введите номер студенческого билета: ";
+        std::cin >> id;
+        std::cout << "Введите email: ";
+        std::cin >> mail;
+
+        char addGrade;
+        do {
+            Grade grade = Grade::inputFromConsole();
+            grades.push_back(grade);
+
+            std::cout << "Добавить еще одну оценку? (y/n): ";
+            std::cin >> addGrade;
+        } while (addGrade == 'y' || addGrade == 'Y');
+
+        return Student(first, last, dob, id, mail, grades);
+    }
+    std::string getFirstName() const {
+        return firstName;
+    }
+
+    std::string getLastName() const {
+        return lastName;
+    }
+
+    std::string getFullName() const {
+        return this->firstName + " " + this->lastName;
+    }
+
+    Grade& getGradeReference() {
+        return grades.front(); 
+    }
+
+    /* 6) Заменить методы Display используя операции << для C++ */
+    virtual void printStudent() const {
+        std::cout << *this;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Student& student) {
+        os << "Имя и фамилия: " << student.firstName << " " << student.lastName << std::endl;
+        os << "Дата рождения: " << student.dateOfBirth << std::endl;
+        os << "Номер студенческого билета: " << student.studentID << std::endl;
+        os << "Email: " << student.email << std::endl;
+
+        os << "\nОценки:" << std::endl;
+        for (const Grade& grade : student.grades) {
+            grade.print();
+            os << std::endl;
+        }
+
+        return os;
+    }
+
+    void inputGrades() {
+        try {
+            int numGrades;
+            std::cout << "Введите количество оценок: ";
+            std::cin >> numGrades;
+
+            for (int i = 0; i < numGrades; ++i) {
+                double score;
+                std::cout << "Введите оценку #" << i + 1 << ": ";
+                std::cin >> score;
+
+                grades.push_back(Grade(score));
+            }
+        }
+        catch (const std::exception& e) {
+            std::cerr << "Ошибка: " << e.what() << std::endl;
         }
     }
-    catch (const std::exception& e) {
-        std::cerr << "Ошибка: " << e.what() << std::endl;
-    }
-}
 
-/* 7.1) Разумное использование виртуальных функций || 7.2) В InternationalStudent */
-virtual void introduce() const {
-    std::cout << "Привет, меня зовут " << getFullName() << std::endl;
-}
+    /* 7.1) Разумное использование виртуальных функций || 7.2) В InternationalStudent */
+    virtual void introduce() const {
+        std::cout << "Привет, меня зовут " << getFullName() << std::endl;
+    }
 };
 
 
@@ -205,7 +205,8 @@ public:
         std::cout << "Hello, my name is " << getFullName() << " from " << country << std::endl;
     }
 
-    void greet(const Student& student) {
+
+    virtual void greet(const Student& student) {
         student.introduce();
     }
 
@@ -219,8 +220,41 @@ public:
 };
 
 
+/* 7.3) Не виртуальная ф-ия */
+void greet(const Student& student) {
+    student.introduce();
+}
+
+/* 8) Применение абстрактного класса */
+class AbstractGrader {
+public:
+    virtual void grade() const = 0;  // Чисто виртуальная функция
+};
+
+class GoodStudent : public AbstractGrader {
+public:
+    void grade() const override {
+        std::cout << "I am a good student!" << std::endl;
+    }
+};
 
 
+/* 9) Применение шаблона класса */
+template <typename T>
+class Container {
+private:
+    T value;
+
+public:
+    Container(const T& val) : value(val) {}
+
+    T getValue() const {
+        return value;
+    }
+};
+
+
+/************ КОД К ПРОШЛЫМ ЛР ****************/
 class Project {
 private:
     std::string projectName;
@@ -416,24 +450,51 @@ public:
         return Course(name, start, end, instructor, events);
     }
 };
-
-/* 7.3) Не виртуальная ф-ия */
-void greet(const Student& student) {
-    student.introduce();
-}
+/************ КОД К ПРОШЛЫМ ЛР ****************/
 
 
 
 int main() {
     setlocale(LC_ALL, "Russian");
 
+    std::cout << "Тест метода printStudent класса InternationalStudent " << std::endl;
     InternationalStudent intlStudent("John", "Doe", "2000-01-01", "12345", "john@example.com", {}, "USA");
     intlStudent.printStudent();
     std::cout << std::endl;
 
+    // Пример использования виртуальных функций
+    std::cout << "Пример использования виртуальных функций\n" << std::endl;
+
+    std::cout << "Пример использования базового класса " << std::endl;
+    Student regularStudent("Alice", "Johnson", "1999-02-15", "54321", "alice@example.com", {});
+    greet(regularStudent);  
+    std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+
+    std::cout << "Пример использования производного класса " << std::endl;
+    InternationalStudent intlStudent2("Bob", "Smith", "2001-05-20", "67890", "bob@example.com", {}, "Canada");
+    greet(intlStudent2);
+    std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~" << "\n" << std::endl;
+
+    std::cout << "Пример использования производного класса с виртуальной фунуцией" << std::endl;
+
+
     // 7.4) Динамические объекты
+    std::cout << "Пример динамические объекты " << std::endl;
     Student* studentPtr = new InternationalStudent("Garas", "Peter", "2000-01-01", "12345", "john@example.com", {}, "Egypt");
     studentPtr->introduce();
     delete studentPtr;
+
+    // 8) Пример использования абстрактного класса
+    AbstractGrader* grader = new GoodStudent();
+    grader->grade();
+    delete grader;
+
+    // 9) Пример использования шаблона класса
+    Container<int> intContainer(42);
+    Container<std::string> stringContainer("Hello, world!");
+
+    std::cout << "Тест шаблона контейнера с int valeu: " << intContainer.getValue() << std::endl;
+    std::cout << "Тест шаблона контейнера со string value: " << stringContainer.getValue() << std::endl;
+
 
 }
