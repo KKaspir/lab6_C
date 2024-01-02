@@ -468,15 +468,12 @@ int main() {
     std::cout << "Пример использования базового класса " << std::endl;
     Student regularStudent("Alice", "Johnson", "1999-02-15", "54321", "alice@example.com", {});
     greet(regularStudent);  
-    std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
 
-    std::cout << "Пример использования производного класса " << std::endl;
+
+    std::cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~\nПример использования производного класса " << std::endl;
     InternationalStudent intlStudent2("Bob", "Smith", "2001-05-20", "67890", "bob@example.com", {}, "Canada");
     greet(intlStudent2);
     std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~" << "\n" << std::endl;
-
-    std::cout << "Пример использования производного класса с виртуальной фунуцией" << std::endl;
-
 
     // 7.4) Динамические объекты
     std::cout << "Пример динамические объекты " << std::endl;
@@ -485,11 +482,13 @@ int main() {
     delete studentPtr;
 
     // 8) Пример использования абстрактного класса
+    std::cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~\nПример использования абстрактного класса " << std::endl;
     AbstractGrader* grader = new GoodStudent();
     grader->grade();
     delete grader;
 
     // 9) Пример использования шаблона класса
+    std::cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~\nПример использования шаблона класса " << std::endl;
     Container<int> intContainer(42);
     Container<std::string> stringContainer("Hello, world!");
 
